@@ -10,14 +10,14 @@ const dynamicRoutes = () => {
     .then((res) => {
       return res.data.map(post => `/blog/${post.slug}`)
     })
-  // console.log(routes)
+  console.log(routes)
   return routes
 }
 
 export default {
+  mode: 'universal',
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
-  mode: 'universal',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -39,7 +39,7 @@ export default {
   },
 
   // Customize the progress-bar color
-  loading: { color: '#eee' },
+  loading: { color: '#fff' },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: ['~/assets/mixins.scss'],
@@ -72,14 +72,6 @@ export default {
     // '@nuxtjs/axios'
   ],
 
-  // Build configuration
-  build: {
-    /*
-     ** You can extend webpack config here
-     */
-    extend (config, ctx) {}
-  },
-
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   // axios: {},
 
@@ -100,5 +92,10 @@ export default {
         }
       }
     }
+  },
+
+  // Build Configuration (https://go.nuxtjs.dev/config-build)
+  build: {
   }
+
 }

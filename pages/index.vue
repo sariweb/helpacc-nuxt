@@ -1,89 +1,207 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
+  <div class="posts">
+    <main>
+      <div
+        v-for="post in sortedPosts"
+        :key="post.id"
+        class="post"
+      >
+        <h3>
+          <a :href="`blog/${post.slug}`">{{ post.title.rendered }}</a>
+        </h3>
+        <!-- eslint-disable -->
+        <div v-html="post.excerpt.rendered" />
+        <a :href="`blog/${post.slug}`" class="readmore">Read more ⟶</a>
       </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+    </main>
+    <aside>
+      <h2 class="tags-title">Tags</h2>
+      <div class="tags-list">
+        <ul>
+          <li
+            @click="updateTag(tag)"
+            v-for="tag in tags"
+            :key="tag.id"
+            :class="[tag.id === selectedTag ? activeClass : '']"
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+            <a>{{ tag.name }}</a>
+            <span v-if="tag.id === selectedTag">✕</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
 export default {
-  components: {
-    Logo,
-    VuetifyLogo
+  data () {
+    return {
+      selectedTag: null,
+      activeClass: 'active'
+    }
+  },
+  computed: {
+    posts () {
+      return this.$store.state.posts
+    },
+    tags () {
+      return this.$store.state.tags
+    },
+    sortedPosts () {
+      // eslint-disable-next-line curly
+      if (!this.selectedTag) return this.posts
+      return this.posts.filter(el => el.tags.includes(this.selectedTag))
+    }
+  },
+  created () {
+    this.$store.dispatch('getPosts')
+  },
+  methods: {
+    updateTag (tag) {
+      if (!this.selectedTag) {
+        this.selectedTag = tag.id
+      } else {
+        this.selectedTag = null
+      }
+    }
   }
 }
 </script>
+
+<style lang="scss">
+.posts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 6vw;
+  margin: 5em auto;
+  max-width: 80vw;
+}
+
+main {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+aside {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+h2 {
+  margin-bottom: 2em;
+}
+
+a,
+a:active,
+a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+a.readmore {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 5px 15px;
+  letter-spacing: 2px;
+  position: relative;
+  color: #000;
+  font-weight: 700;
+  font-family: "Open Sans", serif;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.tags-title {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  text-transform: capitalize;
+  letter-spacing: 0;
+  font-size: 1.2rem;
+  padding: 15px;
+  margin: 0 35px;
+  position: relative;
+  top: -25px;
+}
+
+.tags-list {
+  background: #f5f5f5;
+  padding: 70px 25px 25px;
+  margin-top: -65px;
+}
+
+.post {
+  border-bottom: 1px solid rgb(223, 222, 222);
+  margin-bottom: 2em;
+  padding-bottom: 2em;
+  color: #444;
+
+  h3 {
+    margin-bottom: 0.5em;
+    font-size: 26px;
+  }
+}
+
+.tags-list ul {
+  padding-left: 0;
+}
+
+.tags-list li {
+  font-family: "Open Sans", serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 15px;
+  margin: 0 0 10px 10px;
+  display: inline-block;
+  font-size: 0.7rem !important;
+  border: 1px solid #000;
+  transition: all 0.3s;
+  outline: none;
+  font-weight: normal;
+  cursor: pointer;
+  background: #fff;
+  a {
+    color: #000;
+  }
+}
+
+.active {
+  border: 1px solid #d44119;
+  background-color: #fae091 !important;
+}
+
+.slide {
+  position: relative;
+  background: transparent;
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+  z-index: 1;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &:hover:before {
+    right: -1px;
+  }
+}
+
+.slide::before {
+  content: "";
+  display: block;
+  position: absolute;
+  background: #000;
+  transition: right 0.3s ease;
+  z-index: -1;
+  top: -2px;
+  bottom: -2px;
+  left: -2px;
+  right: 108%;
+  backface-visibility: hidden;
+}
+</style>
