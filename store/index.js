@@ -1,16 +1,17 @@
 /* eslint-disable curly */
 /* eslint-disable no-console */
-const PROD_URL = 'http://helpacc.ru'
-const siteURL = process.dev ? process.env.DEV_URL : PROD_URL
+const prodURL = 'http://helpacc.ru'
+const siteURL = process.dev ? process.env.DEV_URL : prodURL
 
 function propIsDefined (prop) {
   return (prop !== undefined) && (prop !== '')
 }
 
 function getAuth () {
+  const auth = process.dev ? (process.env.USER + ':' + process.env.PASSWORD) : ''
   return 'Basic ' +
     Buffer
-      .from(process.env.USER + ':' + process.env.PASSWORD, 'binary')
+      .from(auth, 'binary')
       .toString('base64')
 }
 
@@ -18,7 +19,10 @@ export const state = () => ({
   posts: [],
   tags: [],
   categories: [],
-  settings: {}
+  settings: {
+    title: 'Консультации бухгалтера',
+    description: 'Бухгалтерский учет, налоговый учет, управленческий учет'
+  }
 })
 
 export const mutations = {
