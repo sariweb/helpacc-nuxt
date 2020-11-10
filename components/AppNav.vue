@@ -1,26 +1,28 @@
 <template>
-  <div class="nav">
-    <ul>
-      <li>
-        <nuxt-link exact to="/">
-          <app-icon />BlogName
-        </nuxt-link>
-      </li>
-      <li>
-        <nuxt-link to="/about">
-          About
-        </nuxt-link>
-      </li>
-    </ul>
+  <div>
+    <div class="nav">
+      <ul>
+        <li>
+          <nuxt-link exact to="/">
+            <app-icon />{{ settings.title }}
+          </nuxt-link>
+          <h5>{{ settings.description }}</h5>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 import AppIcon from '@/components/AppIcon.vue'
+import { mapState } from 'vuex'
 
 export default {
   components: {
     AppIcon
+  },
+  computed: {
+    ...mapState(['settings', 'categories'])
   }
 }
 </script>

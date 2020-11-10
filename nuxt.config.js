@@ -2,22 +2,21 @@
 import colors from 'vuetify/es5/util/colors'
 import axios from 'axios'
 
-const siteURL = 'https://css-tricks.com'
+const siteURL = process.dev ? process.env.DEV_URL : process.env.PROD_URL
 
 const dynamicRoutes = () => {
   const routes = axios
     .get(`${siteURL}/wp-json/wp/v2/posts?page=1&per_page=20`)
     .then((res) => {
-      return res.data.map(post => `/blog/${post.slug}`)
+      return res.data.map(post => `/${post.slug}`)
     })
-  // console.log(routes)
+  console.log(routes)
   return routes
 }
 
 export default {
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
-  mode: 'universal',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -47,7 +46,9 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '~/plugins/posts.server.js',
+    '~/plugins/settings.server.js',
     '~/plugins/tags.server.js',
+    '~/plugins/categories.server.js',
     '~/plugins/dateformat.js'
   ],
 
@@ -63,13 +64,14 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxtjs/dotenv'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     // https://go.nuxtjs.dev/axios
-    // '@nuxtjs/axios'
+    '@nuxtjs/axios'
   ],
 
   // Build configuration
@@ -81,7 +83,7 @@ export default {
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  // axios: {},
+  axios: {},
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

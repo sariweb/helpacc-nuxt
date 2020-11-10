@@ -1,35 +1,51 @@
 <template>
-  <div class="posts">
-    <main>
-      <div
-        v-for="post in sortedPosts"
-        :key="post.id"
-        class="post"
-      >
-        <h3>
-          <a :href="`blog/${post.slug}`">{{ post.title.rendered }}</a>
-        </h3>
-        <!-- eslint-disable -->
-        <div v-html="post.excerpt.rendered" />
-        <a :href="`blog/${post.slug}`" class="readmore">Read more ⟶</a>
-      </div>
-    </main>
-    <aside>
-      <h2 class="tags-title">Tags</h2>
-      <div class="tags-list">
-        <ul>
-          <li
-            @click="updateTag(tag)"
-            v-for="tag in tags"
-            :key="tag.id"
-            :class="[tag.id === selectedTag ? activeClass : '']"
-          >
-            <a>{{ tag.name }}</a>
-            <span v-if="tag.id === selectedTag">✕</span>
-          </li>
-        </ul>
-      </div>
-    </aside>
+  <div>
+    <div class="posts">
+      <main>
+        <div
+          v-for="post in sortedPosts"
+          :key="post.id"
+          class="post"
+        >
+          <h3>
+            <a :href="`${post.slug}`">{{ post.title.rendered }}</a>
+          </h3>
+          <!-- eslint-disable -->
+          <div v-html="post.excerpt.rendered" />
+          <a :href="`${post.slug}`" class="readmore">Read more ⟶</a>
+        </div>
+      </main>
+      <aside>
+        <h2 class="taxonomy-title">Categories</h2>
+        <div class="taxonomy-list">
+          <ul>
+            <li
+              v-for="category in categories"
+              :key="category.id"
+              :class="[category.id === selectedCategory ? activeClass : '']"
+              @click="updateCategory(category)"
+            >
+              <a>{{ category.name }}</a>
+              <span v-if="category.id === selectedCategory">✕</span>
+            </li>
+          </ul>
+        </div>
+        <h2 class="taxonomy-title">Tags</h2>
+        <div class="taxonomy-list">
+          <ul>
+            <li
+              @click="updateTag(tag)"
+              v-for="tag in tags"
+              :key="tag.id"
+              :class="[tag.id === selectedTag ? activeClass : '']"
+            >
+              <a>{{ tag.name }}</a>
+              <span v-if="tag.id === selectedTag">✕</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
   </div>
 </template>
 
@@ -38,6 +54,7 @@ export default {
   data () {
     return {
       selectedTag: null,
+      selectedCategory: null,
       activeClass: 'active'
     }
   },
@@ -48,14 +65,23 @@ export default {
     tags () {
       return this.$store.state.tags
     },
+    categories () {
+      return this.$store.state.categories
+    },
     sortedPosts () {
-      // eslint-disable-next-line curly
-      if (!this.selectedTag) return this.posts
-      return this.posts.filter(el => el.tags.includes(this.selectedTag))
+      let sortedPosts = []
+
+      if (!this.selectedTag) {
+        sortedPosts = this.posts
+      } else {
+        sortedPosts = this.posts.filter(el => el.tags.includes(this.selectedTag))
+      }
+      if (this.selectedCategory) {
+        sortedPosts = sortedPosts.filter(el => el.categories.includes(this.selectedCategory))
+      }
+
+      return sortedPosts
     }
-  },
-  created () {
-    this.$store.dispatch('getPosts')
   },
   methods: {
     updateTag (tag) {
@@ -63,6 +89,13 @@ export default {
         this.selectedTag = tag.id
       } else {
         this.selectedTag = null
+      }
+    },
+    updateCategory (category) {
+      if (!this.selectedCategory) {
+        this.selectedCategory = category.id
+      } else {
+        this.selectedCategory = null
       }
     }
   }
@@ -88,7 +121,7 @@ aside {
 }
 
 h2 {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 a,
@@ -112,7 +145,7 @@ a.readmore {
   background: #fff;
 }
 
-.tags-title {
+.taxonomy-title {
   background-color: #000;
   color: #fff;
   border: none;
@@ -125,7 +158,7 @@ a.readmore {
   top: -25px;
 }
 
-.tags-list {
+.taxonomy-list {
   background: #f5f5f5;
   padding: 70px 25px 25px;
   margin-top: -65px;
@@ -143,11 +176,11 @@ a.readmore {
   }
 }
 
-.tags-list ul {
+.taxonomy-list ul {
   padding-left: 0;
 }
 
-.tags-list li {
+.taxonomy-list li {
   font-family: "Open Sans", serif;
   letter-spacing: 1px;
   text-transform: uppercase;

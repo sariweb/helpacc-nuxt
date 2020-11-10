@@ -54,9 +54,9 @@ h1 {
   text-align: center;
 }
 
-img {
+/* img {
   width: 100%;
-}
+} */
 
 video {
   width: 100%;
@@ -89,5 +89,63 @@ code {
 
 p {
   margin: 15px 0 20px;
+}
+
+ul {
+  padding-left: 2em;
+}
+/* Images */
+.alignleft {
+  float: left;
+}
+
+.alignright {
+  float: right;
+}
+
+.aligncenter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buhtable {
+  border: 5px double #ededed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 12px;
+  line-height: 1;
+  margin: 0 0 20px;
+  width: 100%;
+}
+
+.buhtable td {
+  border: 1px solid #ededed;
+  padding: 2px 5px 2px 2px;
+  vertical-align:top;
+}
+
+.buhtable th {
+  border: 1px solid #ededed;
+  padding: 2px 5px 2px 2px;
+  vertical-align:top;
+  text-align:center;
+}
+
+.buhtable  p {
+  margin-bottom:5px;
+}
+
+section img.alignleft {
+    margin-left: -60px;
+}
+
+img.alignleft {
+    margin: 5px 20px 5px 0;
+}
+
+img.size-full {
+    height: auto;
+    max-width: 100%;
 }
 </style>
