@@ -1,6 +1,7 @@
 /* eslint-disable curly */
 /* eslint-disable no-console */
-const siteURL = process.dev ? process.env.DEV_URL : process.env.PROD_URL
+const PROD_URL = 'http://helpacc.ru'
+const siteURL = process.dev ? process.env.DEV_URL : PROD_URL
 
 function propIsDefined (prop) {
   return (prop !== undefined) && (prop !== '')
