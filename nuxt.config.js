@@ -7,11 +7,15 @@ const siteURL = process.dev ? process.env.DEV_URL : PROD_URL
 
 const dynamicRoutes = () => {
   const routes = axios
-    .get(`${siteURL}/wp-json/wp/v2/posts?page=1&per_page=20`)
+    .get(`${siteURL}/wp-json/wp/v2/posts?page=1&per_page=20&_embed=1`)
     .then((res) => {
       return res.data.map(post => `/${post.slug}`)
     })
-  console.log(routes)
+    .catch((err) => {
+      if (err.res) {
+        console.error(err.res.data)
+      }
+    })
   return routes
 }
 
@@ -54,7 +58,8 @@ export default {
   ],
 
   generate: {
-    routes: dynamicRoutes
+    routes: dynamicRoutes,
+    concurrency: 10
   },
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -84,7 +89,9 @@ export default {
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    retry: { retries: 3 }
+  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
